@@ -3,7 +3,8 @@
   :url "http://keminglabs.com/c2/"
   :license {:name "BSD" :url "http://www.opensource.org/licenses/BSD-3-Clause"}
 
-  :dependencies [[org.clojure/clojure "1.4.0"]
+  :dependencies [[org.clojure/clojure "1.5.1"]
+                 [org.clojure/clojurescript "0.0-2227"]
                  [org.clojure/core.match "0.2.0-alpha12"
                   :exclusions [org.clojure/core.logic]]
                  [clj-iterate "0.96"]
@@ -18,7 +19,7 @@
   :min-lein-version "2.0.0"
 
   :plugins [[com.keminglabs/cljx "0.2.1"]
-            [lein-cljsbuild "0.3.1"]
+            [lein-cljsbuild "1.0.3"]
             [lein-midje "3.0.0"]
             [lein-marginalia "0.7.0"]]
 
