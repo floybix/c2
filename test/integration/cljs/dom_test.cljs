@@ -1,6 +1,6 @@
 (ns c2.dom-test
   (:use-macros [c2.util :only [p pp profile]])
-  (:use [c2.dom :only [attr build-dom-elem merge! append! text]]))
+  (:use [c2.dom :only [attr ->dom append! text]]))
 
 (set! *print-fn* #(.log js/console %))
 
@@ -25,12 +25,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;DOM Element creation from vectors
 (assert (= "<p><span>hello</span><i>0</i><i>1</i><i>2</i></p>"
-           (.-outerHTML (build-dom-elem [:p [:span "hello"]
-                                         (map #(vector :i %) (range 3))])))
+           (.-outerHTML (->dom [:p [:span "hello"]
+                                (map #(vector :i %) (range 3))])))
         "Literal and seq children.")
 
 (assert (= "<span class=\"a b\"></span>"
-           (.-outerHTML (build-dom-elem [:span.a {:class "b"}])))
+           (.-outerHTML (->dom [:span.a {:class "b"}])))
         "Class literal and in attr map")
 
 

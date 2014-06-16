@@ -1,7 +1,7 @@
 (ns c2.core-test
-  (:use-macros [c2.util :only [p pp profile]])
+  (:use-macros [c2.util :only [p pp profile bind!]])
   (:require [c2.svg :as svg])
-  (:use [c2.core :only [unify!]]
+  (:use [c2.core :only [unify]]
         [c2.dom :only [attr children]]))
 
 (set! *print-fn* #(.log js/console %))
@@ -24,7 +24,7 @@
       mapping (fn [d] [:span {:x d} (str d)])]
 
   (profile (str "ENTER single tag with " n " data")
-           (unify! container (range n) mapping))
+           (bind! container (unify (range n) mapping)))
   (let [children (children container)
         fel      (first children)]
     (assert (= n (count children)))
@@ -32,7 +32,7 @@
     (assert (= "0" (:x (attr fel)))))
 
   (profile (str "UPDATE single tag, reversing order")
-           (unify! container (reverse (range n)) mapping))
+           (bind! container (unify (reverse (range n)) mapping)))
   (let [children (children container)
         fel       (first children)]
     (assert (= n (count children)))
@@ -41,12 +41,12 @@
 
 
   (profile (str "UPDATE single tag with new datum")
-           (unify! container (range (inc n)) mapping))
+           (bind! container (unify (range (inc n)) mapping)))
   (assert (= (inc n) (count (children container))))
 
 
   (profile (str "REMOVE " (/ n 2) " single tags")
-           (unify! container (range (/ n 2)) mapping))
+           (bind! container (unify (range (/ n 2)) mapping)))
   (assert (= (/ n 2)  (count (children container)))))
 
 
@@ -60,7 +60,7 @@
       !ds (atom (range n))]
 
   (profile (str "ENTER single tag with " n " data")
-           (unify! container !ds mapping))
+           (bind! container (unify @!ds mapping)))
   (let [children (children container)
         fel      (first children)]
     (assert (= n (count children)))
@@ -86,13 +86,13 @@
       mapping (fn [d idx] [:div {:val (:val d)}
                           [:span (str (:id d))]])]
   (profile "ENTER node hiearchy"
-           (unify! container data mapping
-                   :key-fn :id))
+           (bind! container (unify data mapping
+                                   :key-fn #(:id %))))
   (assert (= 100 (count (children container))))
 
   (profile "UPDATE/EXIT node hiearchy"
-           (unify! container (take 10 new-data) mapping
-                   :key-fn :id))
+           (bind! container (unify (take 10 new-data) mapping
+                                   :key-fn #(:id %))))
 
   (assert (= 10 (count (children container))))
   (assert (= (:val (first new-data))

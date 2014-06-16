@@ -1,6 +1,6 @@
 (ns c2.choropleth-test
-  (:use-macros [c2.util :only [p pp profile]])
-  (:use [c2.core :only [unify! style]]
+  (:use-macros [c2.util :only [p pp profile bind!]])
+  (:use [c2.core :only [unify]]
         [c2.maths :only [extent floor]]
         [c2.geo.core :only [geo->svg]]
         [c2.geo.projection :only [albers-usa]]
@@ -25,11 +25,11 @@
                                                :viewBox "0 0 950 500"}])
                $states (dom/append! $svg [:g.states])]
 
-           (unify! $states data
+           (bind! $states (unify data
                    (fn [[state-name val]]
                      [:path.state {:d (geo->svg (get states state-name)
                                                 :projection proj)
                                    :stroke "black"
-                                   :fill (color-scale val)}]))
+                                   :fill (color-scale val)}])))
 
            (dom/remove! $svg)))
